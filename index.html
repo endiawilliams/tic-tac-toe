@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Tic Tac Toe
+        </title>
+        <style>
+            body {
+                background-color: #ffb6b9;
+                font-family: arial, helvetica, sans-serif;
+                font-size: 72px;
+                font-weight: bold;
+            }
+
+            #container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                border-spacing: 0;
+            }
+            
+            .boardsquare {
+                border: 5px solid #fae3d9;
+                width: 150px;
+                height: 150px;
+            }
+
+            #s0-0, #s0-1, #s0-2 {
+                border-top: none;
+            }
+            #s2-0, #s2-1, #s2-2 {
+                border-bottom: none;
+            }
+            #s0-0, #s1-0, #s2-0{
+                border-left: none;
+            }
+            #s0-2, #s1-2, #s2-2{
+                border-right: none;
+            }
+
+            .x {
+                color: #a9fbd7;
+            }
+
+            .o {
+                color: #d7fdec;
+            }
+        </style>
+    </head>
+    <body>
+        <table id="container">
+            <tr id="row0">
+
+            </tr>
+            <tr id="row1">
+
+            </tr>
+            <tr id="row2">
+
+            </tr>
+        </table>
+        <script>
+            const gameBoard = (() => {
+                let board = new Array(3);
+
+                for(let i = 0; i < board.length; i++){
+                    board[i] = ["","",""];
+                }
+                
+                return {board};
+            })();
+
+            let player = (name, marker) => {
+                function placePiece(row,column){
+                    if (gameBoard.board[row][column] == '') {
+                        gameBoard.board[row][column] = marker;
+                        if (player1Turn) {
+                            player1Turn = false;
+                        } else {
+                            player1Turn = true;
+                        }
+                    }
+                }
+
+                //what are this object's public properties
+                return {name, marker, placePiece};
+            }
+            
+            let player1 = player("Freya","X");
+            let player2 = player("Endia","O");
+            let player1Turn = true;
+
+            let displayController = (() => {
+                let boardSquares = document.getElementsByClassName('boardsquare');
+                let containerTable = document.getElementById('container');
+                
+                containerTable.onclick = function(event) {
+                    let cell = event.target.id
+                    let row = cell.slice(1,2)
+                    let column = cell.slice(3,4)
+
+                    if (player1Turn) {
+                        player1.placePiece(row,column)
+                    } else {
+                        player2.placePiece(row,column)
+                    }
+
+                    render();
+                }
+
+                for(let i = 0; i < 3; i++) {
+                    let row = document.getElementById('row'+ i)
+                    for(let j = 0; j < 3; j++) {
+                        boardSquare = document.createElement("td");
+                        boardSquare.id = "s" + i + "-" + j;
+                        boardSquare.classList.add("boardsquare");
+                        row.appendChild(boardSquare);
+                    }
+                    
+                }
+
+                function render(){
+                    for(let i = 0; i < 3; i++) {
+                        for(let j = 0; j < 3; j++) {
+                            let squareText = document.getElementById("s" + i + "-" + j);
+                            squareText.textContent = gameBoard.board[i][j];
+                            if (squareText.textContent == 'X') {
+                                squareText.classList.add('x')
+                            } else if (squareText.textContent == 'O') {
+                                squareText.classList.add('o')
+                            }
+                        }
+                    }
+                };
+
+                return{render};
+
+            })();
+
+            displayController.render();
+
+        </script>
+    </body>
+</html>
